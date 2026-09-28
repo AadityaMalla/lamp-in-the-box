@@ -101,9 +101,10 @@ kubectl get pods
 - `/api/students` — NGINX → Rocket → Spark SQL query result
 
 ## Team
-- Aaditya
--Mayu, Natoli
-cat > README.md << 'EOF'
+-Malla, Aaditya   
+-Mayu, Natoli   
+-Osman, Khadija    
+
 # LAMP in the Box — CSCI 312 Project 1
 
 A modified LAMP stack packaged into containers and orchestrated with Kubernetes.
