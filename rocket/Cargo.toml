@@ -1,0 +1,8 @@
+[package]
+name = "rocket-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["json"] }
+reqwest = { version = "0.12", default-features = false, features = ["json"] }

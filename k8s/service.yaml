@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lamp-service
+spec:
+  type: ClusterIP
+  selector:
+    app: lamp-box                 # matches the pods by label
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80                # the nginx container in each pod

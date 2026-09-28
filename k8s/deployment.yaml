@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lamp-box
+  labels:
+    app: lamp-box
+spec:
+  replicas: 3                     # 3 pods in the cluster
+  selector:
+    matchLabels:
+      app: lamp-box
+  template:
+    metadata:
+      labels:
+        app: lamp-box
+    spec:
+      containers:                 # the same 3 containers in every pod
+      - name: nginx               # A: web server
+        image: lamp-nginx:1.0
+        imagePullPolicy: Never    # use the locally imported image
+        ports:
+        - containerPort: 80
+        env:
+        - name: ROCKET_HOST
+          value: "127.0.0.1"      # containers in a pod share localhost
+        resources:
+          requests: { memory: "32Mi", cpu: "50m" }
+          limits:   { memory: "128Mi" }
+        readinessProbe:
+          httpGet: { path: /, port: 80 }
+
+      - name: rocket              # P: Rust (Rocket) back end
+        image: lamp-rocket:1.0
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: SPARK_URL
+          value: "http://127.0.0.1:9000"
+        resources:
+          requests: { memory: "32Mi", cpu: "50m" }
+          limits:   { memory: "128Mi" }
+
+      - name: spark               # M: Spark SQL data layer
+        image: lamp-spark:1.0
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9000
+        - containerPort: 4040     # Spark UI
+        resources:
+          requests: { memory: "768Mi", cpu: "250m" }
+          limits:   { memory: "1536Mi" }
+        readinessProbe:
+          httpGet: { path: /health, port: 9000 }
+          initialDelaySeconds: 20
+          periodSeconds: 5
